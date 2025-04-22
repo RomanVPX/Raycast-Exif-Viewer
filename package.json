@@ -5,6 +5,9 @@
   "description": "Show metadata (EXIF) for images from clipboard or URL",
   "icon": "command-icon.png",
   "author": "j3lte",
+  "contributors": [
+    "RomanVPX"
+  ],
   "keywords": [
     "exif",
     "image",
