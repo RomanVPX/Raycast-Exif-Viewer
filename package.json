@@ -48,7 +48,7 @@
   ],
   "dependencies": {
     "@raycast/api": "^1.72.1",
-    "exifreader": "^4.22.1",
+    "exifreader": "github:RomanVPX/exifreader#fix/utf-8",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
