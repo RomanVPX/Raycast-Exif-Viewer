@@ -14,42 +14,53 @@ const handleError = (error: unknown) => {
 };
 
 export const tagsToMarkdownTable = (tags: Tags): string => {
-  // Функция для обработки текста с переносами строк
-  const sanitizeForMarkdown = (text: any): string => {
-    if (text === undefined || text === null) return "";
-    // Var.1 Spaces instead of new lines
-    // return String(text).replace(/\n/g, " ");
-    // Var. 2 Spaces + ↵ instead of new lines
-    // return String(text).replace(/\n/g, " ↵ ");
-    // Var. 3 Add | | between lines to make it look like a table
-    return String(text).replace(/\n/g, "\n| | ");
-  };
-
   const table = Object.entries(tags)
-    // Filter out image tags because it's shown as an image
     .filter(([key]) => !["Thumbnail", "Images"].includes(key))
     .sort(([key1], [key2]) => key1.localeCompare(key2))
     .map(([key, value]) => {
       if (value === undefined) {
         return `| ${key} | \`undefined\` | \`undefined\` |`;
       }
-      // Omit ApplicationNotes and MakerNote because they're too long
+
       if (["ApplicationNotes", "MakerNote"].includes(key)) {
         return `| ${key} | _... omitted (see JSON export) ..._ | \`...\` |`;
       } else if (value instanceof Array) {
-        return `| ${key} | ${sanitizeForMarkdown(value.map((v) => v.description).join(", "))} | \`${sanitizeForMarkdown(JSON.stringify(
-          value.map((v) => v.value),
-        ))}\` |`;
+        return formatMultilineRow(key, value.map((v) => v.description).join(", "),
+          JSON.stringify(value.map((v) => v.value)));
       } else if (value instanceof Date) {
-        return `| ${key} | ${sanitizeForMarkdown(value.toISOString())} | \`${sanitizeForMarkdown(JSON.stringify(value.value))}\` |`;
+        return formatMultilineRow(key, value.toISOString(),
+          JSON.stringify(value.value));
       } else {
-        return `| ${key} | ${sanitizeForMarkdown(value.description)} | \`${sanitizeForMarkdown(JSON.stringify(value.value))}\` |`;
+        return formatMultilineRow(key, value.description,
+          JSON.stringify(value.value));
       }
     })
     .join("\n");
 
   return `| **Tag** | **Value** | **Raw Value** |\n| --- | --- | --- |\n${table}`;
 };
+
+function formatMultilineRow(tag: string, valueText: string, rawValueText: string): string {
+  if (!valueText || !valueText.includes("\n")) {
+    return `| ${tag} | ${valueText} | \`${rawValueText}\` |`;
+  }
+
+  const valueLines = String(valueText).split("\n");
+
+  const tempMarker = "___LINE_BREAK___";
+  const rawValue = String(rawValueText).replace(/\\n/g, tempMarker);
+  const rawValueLines = rawValue.split(tempMarker);
+
+  let result = `| ${tag} | ${valueLines[0]} | \`${rawValueLines[0]}\` |`;
+
+  for (let i = 1; i < valueLines.length; i++) {
+    const rawPart = i < rawValueLines.length ? rawValueLines[i] : "";
+    const rawDisplay = rawPart ? `\`${rawPart}\`` : "";
+    result += `\n| | ${valueLines[i]} | ${rawDisplay} |`;
+  }
+
+  return result;
+}
 
 export const exifFromFile = async (file: string): Promise<Tags | null> => {
   const toast = await showActionToast({
