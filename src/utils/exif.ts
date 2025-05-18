@@ -40,19 +40,30 @@ export const tagsToMarkdownTable = (tags: Tags): string => {
   return `| **Tag** | **Value** | **Raw Value** |\n| --- | --- | --- |\n${table}`;
 };
 
-function formatMultilineRow(tag: string, valueText: string, rawValueText: string): string {
-  if (!valueText || !valueText.includes("\n")) {
-    return `| ${tag} | ${valueText} | \`${rawValueText}\` |`;
+function formatMultilineRow(tag: string, valueText: unknown, rawValueText: unknown): string {
+  // Safely convert values to strings
+  const valueStr = valueText !== undefined && valueText !== null ? String(valueText) : "";
+  const rawValueStr = rawValueText !== undefined && rawValueText !== null ? String(rawValueText) : "";
+
+  if (!valueStr || !valueStr.includes("\n")) {
+    // If the value doesn't contain a newline, we can return a single line
+    return `| ${tag} | ${valueStr} | \`${rawValueStr}\` |`;
   }
 
-  const valueLines = String(valueText).split("\n");
+  // Split the value string by newlines
+  const valueLines = valueStr.split("\n");
 
+  // Also split the raw value string by newlines
+  // We need to replace the newline characters with a temporary marker to avoid splitting the raw value incorrectly
+  // This is because JSON.stringify will escape newlines
   const tempMarker = "___LINE_BREAK___";
-  const rawValue = String(rawValueText).replace(/\\n/g, tempMarker);
+  const rawValue = rawValueStr.replace(/\\n/g, tempMarker);
   const rawValueLines = rawValue.split(tempMarker);
 
+  // First line of the value and raw value
   let result = `| ${tag} | ${valueLines[0]} | \`${rawValueLines[0]}\` |`;
 
+  // Process the rest of the lines
   for (let i = 1; i < valueLines.length; i++) {
     const rawPart = i < rawValueLines.length ? rawValueLines[i] : "";
     const rawDisplay = rawPart ? `\`${rawPart}\`` : "";
