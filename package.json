@@ -5,6 +5,9 @@
   "description": "Show metadata (EXIF) for images from clipboard or URL",
   "icon": "command-icon.png",
   "author": "j3lte",
+  "contributors": [
+    "RomanVPX"
+  ],
   "keywords": [
     "exif",
     "image",
@@ -44,17 +47,18 @@
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.72.1",
-    "exifreader": "^4.22.1",
+    "@raycast/api": "^1.94.0",
+    "exifreader": "github:RomanVPX/ExifReader-UTF-8#fix/utf-8-support",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^1.0.8",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/node": "20.12.7",
-    "@types/react": "18.2.79",
+    "@types/node": "^22.13.10",
+    "@types/react": "^19.0.10",
     "eslint": "^8.51.0",
     "prettier": "^3.2.5",
+    "react-devtools": "^6.1.1",
     "typescript": "^5.4.5"
   },
   "scripts": {
@@ -62,6 +66,7 @@
     "dev": "ray develop",
     "fix-lint": "ray lint --fix",
     "lint": "ray lint",
-    "publish": "npx @raycast/api@latest publish"
+    "publish": "npx @raycast/api@latest publish",
+    "postinstall": "cd node_modules/exifreader && npm install && node bin/build.js"
   }
 }
