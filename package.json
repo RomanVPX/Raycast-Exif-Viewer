@@ -26,7 +26,7 @@
       "name": "show-exif-data-for-image",
       "title": "Show Metadata for Image",
       "subtitle": "Exif Viewer",
-      "description": "Show Metadata for Image (EXIF) from clipboard or a url",
+      "description": "Show metadata for an image (EXIF) from the clipboard, a selected file, or a URL.",
       "mode": "view",
       "arguments": [
         {
