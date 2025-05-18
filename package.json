@@ -66,6 +66,7 @@
     "dev": "ray develop",
     "fix-lint": "ray lint --fix",
     "lint": "ray lint",
-    "publish": "npx @raycast/api@latest publish"
+    "publish": "npx @raycast/api@latest publish",
+    "postinstall": "cd node_modules/exifreader && npm install && node bin/build.js"
   }
 }
