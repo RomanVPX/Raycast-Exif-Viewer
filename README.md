@@ -1,6 +1,6 @@
 > [!note]
 > ### What the fork?
-> This is a fork of the Exif Viewer extension for Raycast. Main changes:
+> This is a fork of the [Exif Viewer extension](https://github.com/raycast/extensions/tree/65a9712d8f951a98cc0c3426500ff8f5b2df571e/extensions/exif/) for Raycast. Main changes:
 >   - Fixed the display of text in UTF-8 encoding.
 >   - Fixed (as far as possible) the formation of the markdown table with metadata displayed by the extension for cases when `newline` characters are present in the values. At least now the text stays in the same column.
 >   - Added the ability to view the metadata of an image selected in Finder, without having to copy it to the clipboard.
