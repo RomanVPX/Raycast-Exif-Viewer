@@ -14,6 +14,17 @@ const handleError = (error: unknown) => {
 };
 
 export const tagsToMarkdownTable = (tags: Tags): string => {
+  // Функция для обработки текста с переносами строк
+  const sanitizeForMarkdown = (text: any): string => {
+    if (text === undefined || text === null) return "";
+    // Var.1 Spaces instead of new lines
+    // return String(text).replace(/\n/g, " ");
+    // Var. 2 Spaces + ↵ instead of new lines
+    // return String(text).replace(/\n/g, " ↵ ");
+    // Var. 3 Add | | between lines to make it look like a table
+    return String(text).replace(/\n/g, "\n| | ");
+  };
+
   const table = Object.entries(tags)
     // Filter out image tags because it's shown as an image
     .filter(([key]) => !["Thumbnail", "Images"].includes(key))
@@ -26,13 +37,13 @@ export const tagsToMarkdownTable = (tags: Tags): string => {
       if (["ApplicationNotes", "MakerNote"].includes(key)) {
         return `| ${key} | _... omitted (see JSON export) ..._ | \`...\` |`;
       } else if (value instanceof Array) {
-        return `| ${key} | ${value.map((v) => v.description).join(", ")} | \`${JSON.stringify(
+        return `| ${key} | ${sanitizeForMarkdown(value.map((v) => v.description).join(", "))} | \`${sanitizeForMarkdown(JSON.stringify(
           value.map((v) => v.value),
-        )}\` |`;
+        ))}\` |`;
       } else if (value instanceof Date) {
-        return `| ${key} | ${value.toISOString()} | \`${JSON.stringify(value.value)}\` |`;
+        return `| ${key} | ${sanitizeForMarkdown(value.toISOString())} | \`${sanitizeForMarkdown(JSON.stringify(value.value))}\` |`;
       } else {
-        return `| ${key} | ${value.description} | \`${JSON.stringify(value.value)}\` |`;
+        return `| ${key} | ${sanitizeForMarkdown(value.description)} | \`${sanitizeForMarkdown(JSON.stringify(value.value))}\` |`;
       }
     })
     .join("\n");
