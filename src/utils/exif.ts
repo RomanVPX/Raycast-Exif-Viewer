@@ -55,7 +55,6 @@ function formatMultilineRow(tag: string, valueText: unknown, rawValueText: unkno
 
   // Also split the raw value string by newlines
   // We need to replace the newline characters with a temporary marker to avoid splitting the raw value incorrectly
-  // This is because JSON.stringify will escape newlines
   const tempMarker = "___LINE_BREAK___";
   const rawValue = rawValueStr.replace(/\\n/g, tempMarker);
   const rawValueLines = rawValue.split(tempMarker);
